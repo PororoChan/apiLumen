@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\PostData;
+use Illuminate\Support\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CobaController extends Controller
 {
@@ -15,29 +17,48 @@ class CobaController extends Controller
 		return response()->json([
 			'success' => true,
 			'message' => 'List Semua Post',
-			'data' => $posts
+			'data' => $posts,
 		], 200);
 	}
 
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'nama' => 'required',
-			'gender' => 'required',
-			'alamat' => 'required',
+			'title' => 'required',
+			'singer' => 'required',
+			'album_msc' => 'required',
+			'singer_desc' => 'required'
 		]);
+
+			$title = $request->input('title');
+			$singer = $request->input('singer');
+			$album_msc = $request->input('album_msc');
+			$img = $request->file('cover_msc');
+			$path = 'images'; 
+			$nama = $img->getClientOriginalName();
+			$img->move($path, $nama);
+			$music = $request->file('msc');
+			$pathh = 'music';
+			$name = $music->getClientOriginalName();
+			$music->move($pathh, $name);
+			$cover_msc = $nama;
+			$msc = $name;
+			$singer_desc = $request->input('singer_desc');
 
 		if($validator->fails()) {
 			return response()->json([
 				'success' => false,
-				'message' => 'Data wajib di isi',
-				'data' => $validator->errors()
+				'message' => 'Data Gagal disimpan',
+				'data' => $validator->errors(),
 			], 401);
 		} else {
 			$post = PostData::create([
-				'nama' => $request->input('nama'),
-				'gender' => $request->input('gender'),
-				'alamat' => $request->input('alamat'),
+				"title" => $title,
+				"singer" => $singer,
+				"album_msc" => $album_msc,
+				"cover_msc" => $cover_msc,
+				"msc" => $msc,
+				"singer_desc" => $singer_desc,
 			]);
 
 			if($post) {
@@ -70,6 +91,73 @@ class CobaController extends Controller
 				'message' => 'Data tidak ditemukan',
 			], 404);
 		}
+	}
+
+	public function update(Request $request, $id) {
+		$validator = Validator::make($request->all(), [
+			'title' => 'required',
+			'singer' => 'required',
+			'album_msc' => 'required',
+			'singer_desc' => 'required',
+		]);
+
+			$title = $request->input('title');
+			$singer = $request->input('singer');
+			$album_msc = $request->input('album_msc');
+			$img = $request->file('cover_msc');
+			$path = 'images'; 
+			$nama = $img->getClientOriginalName();
+			$img->move($path, $nama);
+			$music = $request->file('msc');
+			$pathh = 'music';
+			$name = $music->getClientOriginalName();
+			$music->move($pathh, $name);
+			$cover_msc = $nama;
+			$msc = $name;
+			$singer_desc = $request->input('singer_desc');
+
+		if($validator->fails()) {
+			return response()->json([
+				'success' => false,
+				'message' => 'Data harus di isi',
+				'data' => $validator->errors()
+			], 401);
+		} else {
+			$post = PostData::where('id_msc', $id)->update([
+				"title" => $title,
+				"singer" => $singer,
+				"album_msc" => $album_msc,
+				"cover_msc" => $cover_msc,
+				"msc" => $msc,
+				"singer_desc" => $singer_desc,
+			]);
+
+			if($post) {
+				return response()->json([
+					'success' => true,
+					'message' => 'Berhasil update data',
+					'data' => $post
+				], 201);
+			} else {
+				return response()->json([
+					'success' => false,
+					'message' => 'Gagal update data',
+				], 400);
+			}
+		}
+	}
+
+	public function destroy($id) {
+		$post = PostData::where('id_msc', $id)->first();
+
+		$post->delete();
+
+		if($post) {
+			return response()->json([
+				'success' => true,
+				'message' => 'Data berhasil dihapus',
+			], 200);
+		} 
 	}
 }
 

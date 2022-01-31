@@ -13,6 +13,8 @@
 |
 */
 $router->post('/posts/add','CobaController@store');
+$router->put('/posts/update/{id}', 'CobaController@update');
+$router->delete('/posts/{id}', 'CobaController@destroy');
 $router->get('/posts','CobaController@index');
 $router->get('/posts/{id}','CobaController@show');
 $router->get('/', function () use ($router) {

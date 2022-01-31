@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCoba extends Migration
+class CreateTableMusic extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateCoba extends Migration
      */
     public function up()
     {
-        Schema::create('coba', function (Blueprint $table) {
-            $table->bigIncrements('id');
-			$table->string('nama');
-			$table->string('gender');
-			$table->string('alamat');
+        Schema::create('coba_music', function (Blueprint $table) {
+            $table->bigIncrements('id_msc');
+			$table->string('title');
+			$table->string('singer');
+			$table->string('album_msc');
+			$table->string('cover_msc');
+			$table->string('msc');
+			$table->string('singer_desc');
 			$table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateCoba extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('coba');
+        Schema::dropIfExists('table_music');
     }
 }

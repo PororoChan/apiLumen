@@ -7,11 +7,12 @@
 	class PostData extends Model
 	{
 
-		protected $table = 'coba';
+		protected $table = 'coba_music';
 
+		protected $primaryKey = 'id_msc';
 
 		protected $fillable = [
-			'nama', 'gender', 'alamat'
+			'title', 'singer', 'album_msc', 'cover_msc', 'msc', 'singer_desc'
 		];
 
 		const CREATED_AT = null;

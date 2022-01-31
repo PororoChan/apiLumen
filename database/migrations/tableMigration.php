@@ -8,18 +8,21 @@ class TableMigration extends Migration
 {
 	public function up() 
 	{
-		Schema::create('coba', function (Blueprint $table) {
-			$table->bigIncrements('id');
-			$table->string('nama');
-			$table->string('gender');
-			$table->string('alamat');
+		Schema::create('coba_music', function (Blueprint $table) {
+			$table->bigIncrements('id_msc');
+			$table->string('title');
+			$table->string('singer');
+			$table->string('album_msc');
+			$table->string('cover_msc');
+			$table->string('msc');
+			$table->string('singer_desc');
 			$table->timestamps();
 		});
 	}
 
 	public function down()
 	{
-		Schema::dropIfExist('coba');
+		Schema::dropIfExist('music_list');
 	}
 }
 
