@@ -13,7 +13,6 @@ class CobaController extends Controller
 	public function index()
 	{
 		$posts = PostData::all();
-
 		return response()->json([
 			'success' => true,
 			'message' => 'List Semua Post',
@@ -35,14 +34,14 @@ class CobaController extends Controller
 			$album_msc = $request->input('album_msc');
 			$img = $request->file('cover_msc');
 			$path = 'images'; 
-			$nama = $img->getClientOriginalName();
-			$img->move($path, $nama);
+			$nama = time().$img->getClientOriginalName();
 			$music = $request->file('msc');
 			$pathh = 'music';
-			$name = $music->getClientOriginalName();
-			$music->move($pathh, $name);
-			$cover_msc = $nama;
-			$msc = $name;
+			$name = time().$music->getClientOriginalName();
+			$cover_msc = str_replace(" ", "", $nama);
+			$img->move($path, $cover_msc);
+			$msc = str_replace(" ", "", $name);
+			$music->move($pathh, $msc);
 			$singer_desc = $request->input('singer_desc');
 
 		if($validator->fails()) {
@@ -56,8 +55,8 @@ class CobaController extends Controller
 				"title" => $title,
 				"singer" => $singer,
 				"album_msc" => $album_msc,
-				"cover_msc" => $cover_msc,
-				"msc" => $msc,
+				"cover_msc" => url('images/'.$cover_msc),
+				"msc" => url('music/'.$msc),
 				"singer_desc" => $singer_desc,
 			]);
 
@@ -124,18 +123,18 @@ class CobaController extends Controller
 
 			if($image !== null && !empty($image)) {
 				$paths = 'images'; 
-				$namas = $image->getClientOriginalName();
-				$image->move($paths, $namas);
-				$cover_msc = $namas;
-				$dt['cover_msc'] = $cover_msc;
+				$namas = time().$image->getClientOriginalName();
+				$cover_msc = str_replace(" ", "", $namas);
+				$image->move($paths, $cover_msc);
+				$dt['cover_msc'] = url('images/'.$cover_msc);
 			}
 			
 			if($musics !== null && !empty($musics)) {
 				$patth = 'music';
-				$names = $musics->getClientOriginalName();
-				$musics->move($patth, $names);
-				$msc = $names;
-				$dt['msc'] = $msc;
+				$names = time().$musics->getClientOriginalName();
+				$msc = str_replace(" ", "", $names);
+				$musics->move($patth, $msc);
+				$dt['msc'] = url('music/'.$msc);
 			}
 
 		if($validator->fails()) {
