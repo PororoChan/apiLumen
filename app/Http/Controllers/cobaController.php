@@ -94,27 +94,49 @@ class CobaController extends Controller
 	}
 
 	public function update(Request $request, $id) {
-		$validator = Validator::make($request->all(), [
-			'title' => 'required',
-			'singer' => 'required',
-			'album_msc' => 'required',
-			'singer_desc' => 'required',
-		]);
+		$validator = Validator::make($request->all(), []);
+
+			$dt = [];	
 
 			$title = $request->input('title');
 			$singer = $request->input('singer');
 			$album_msc = $request->input('album_msc');
-			$img = $request->file('cover_msc');
-			$path = 'images'; 
-			$nama = $img->getClientOriginalName();
-			$img->move($path, $nama);
-			$music = $request->file('msc');
-			$pathh = 'music';
-			$name = $music->getClientOriginalName();
-			$music->move($pathh, $name);
-			$cover_msc = $nama;
-			$msc = $name;
 			$singer_desc = $request->input('singer_desc');
+
+			$image = $request->file('cover_msc');
+			$musics = $request->file('msc');
+
+			if($title !== null && !empty($title)) {
+				$dt['title'] = $title;
+			}
+
+			if($singer !== null && !empty($singer)) {
+				$dt['singer'] = $singer;
+			} 
+
+			if($album_msc !== null && !empty($album_msc)) {
+				$dt['album_msc'] = $album_msc;
+			}
+
+			if($singer_desc !== null && !empty($singer_desc)) {
+				$dt['singer_desc'] = $singer_desc;
+			}
+
+			if($image !== null && !empty($image)) {
+				$paths = 'images'; 
+				$namas = $image->getClientOriginalName();
+				$image->move($paths, $namas);
+				$cover_msc = $namas;
+				$dt['cover_msc'] = $cover_msc;
+			}
+			
+			if($musics !== null && !empty($musics)) {
+				$patth = 'music';
+				$names = $musics->getClientOriginalName();
+				$musics->move($patth, $names);
+				$msc = $names;
+				$dt['msc'] = $msc;
+			}
 
 		if($validator->fails()) {
 			return response()->json([
@@ -123,14 +145,7 @@ class CobaController extends Controller
 				'data' => $validator->errors()
 			], 401);
 		} else {
-			$post = PostData::where('id_msc', $id)->update([
-				"title" => $title,
-				"singer" => $singer,
-				"album_msc" => $album_msc,
-				"cover_msc" => $cover_msc,
-				"msc" => $msc,
-				"singer_desc" => $singer_desc,
-			]);
+			$post = PostData::where('id_msc', $id)->update($dt);
 
 			if($post) {
 				return response()->json([
